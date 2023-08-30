@@ -6,18 +6,10 @@ const LINK_BUTTON_OFFSET = 10;
 
 //This is a combination of label/color used for coloring the boxes. Feel free to change this, it will modify the colors everywhere.
 const boxColors = {
-    brand: "rgb(170,0,0)",
-    loc: "rgb(170,80,13)",
-    pers: "rgb(170,153,21)",
-    total: "rgb(103,170,0)",
-    date: "rgb(29,170,5)",
-    label: "rgb(24,170,135)",
-    price: "rgb(36,124,170)",
-    bundle: "rgb(0,51,170)",
-    phone: "rgb(49,0,170)",
-    misc: "rgb(116,0,170)",
-    payment: "rgb(0,0,0)",
-    barcode: "rgb(63,62,64)",
+    header: "rgb(170,0,0)",
+    question: "rgb(170,80,13)",
+    answer: "rgb(170,153,21)",
+    other: "rgb(103,170,0)",
 }
 
 fabric.Object.prototype.borderScaleFactor = 2
@@ -176,18 +168,10 @@ export default class BoxService {
                         <label for="label">Type</label>
                         <select class="uk-select uk-form-small" id='label-${box.box.id}' name="label">
                         <option value=""></option>
-                        <option value="brand">Brand</option>
-                        <option value="loc">Location</option>
-                        <option value="pers">Person</option>
-                        <option value="total">Total</option>
-                        <option value="date">Date</option>
-                        <option value="label">Label</option>
-                        <option value="price">Price</option>
-                        <option value="bundle">Bundle</option>
-                        <option value="phone">Phone</option>
-                        <option value="misc">Misc</option>
-                        <option value="payment">Payment</option>
-                        <option value="barcode">Barcode</option>
+                        <option value="header">Header</option>
+                        <option value="question">Question</option>
+                        <option value="answer">Answer</option>
+                        <option value="other">Other</option>
                         </select>
                     </div>
                     <div>

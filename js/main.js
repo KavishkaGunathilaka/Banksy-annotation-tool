@@ -90,37 +90,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     State.canvas.historySaveAction()
                     break
                 case "digit1":
-                    BoxService.changeLabel(State.selectedBoxId, "label")
+                    BoxService.changeLabel(State.selectedBoxId, "header")
                     break
                 case "digit2":
-                    BoxService.changeLabel(State.selectedBoxId, "price")
+                    BoxService.changeLabel(State.selectedBoxId, "question")
                     break
                 case "digit3":
-                    BoxService.changeLabel(State.selectedBoxId, "bundle")
+                    BoxService.changeLabel(State.selectedBoxId, "answer")
                     break
                 case "digit4":
-                    BoxService.changeLabel(State.selectedBoxId, "misc")
-                    break
-                case "digit5":
-                    BoxService.changeLabel(State.selectedBoxId, "payment")
-                    break
-                case "digit6":
-                    BoxService.changeLabel(State.selectedBoxId, "barcode")
-                    break
-                case "digit7":
-                    BoxService.changeLabel(State.selectedBoxId, "brand")
-                    break
-                case "digit8":
-                    BoxService.changeLabel(State.selectedBoxId, "loc")
-                    break
-                case "digit9":
-                    BoxService.changeLabel(State.selectedBoxId, "date")
-                    break
-                case "digit0":
-                    BoxService.changeLabel(State.selectedBoxId, "phone")
-                    break
-                case "minus":
-                    BoxService.changeLabel(State.selectedBoxId, "pers")
+                    BoxService.changeLabel(State.selectedBoxId, "other")
                     break
                 default:
                     break
