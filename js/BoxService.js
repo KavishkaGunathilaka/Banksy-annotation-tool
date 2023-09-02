@@ -6,10 +6,13 @@ const LINK_BUTTON_OFFSET = 10;
 
 //This is a combination of label/color used for coloring the boxes. Feel free to change this, it will modify the colors everywhere.
 const boxColors = {
-    header: "rgb(170,0,0)",
-    question: "rgb(170,80,13)",
-    answer: "rgb(170,153,21)",
-    other: "rgb(103,170,0)",
+    O: "rgb(170,0,0)",
+    B_HEADER: "rgb(170,153,21)",
+    I_HEADER: "rgb(170,80,13)",
+    B_QUESTION: "rgb(103,170,0)",
+    I_QUESTION: "rgb(0,0,170)",
+    B_ANSWER: "rgb(21,153,170)",
+    I_ANSWER: "rgb(0,170,0)"
 }
 
 fabric.Object.prototype.borderScaleFactor = 2
@@ -168,10 +171,13 @@ export default class BoxService {
                         <label for="label">Type</label>
                         <select class="uk-select uk-form-small" id='label-${box.box.id}' name="label">
                         <option value=""></option>
-                        <option value="header">Header</option>
-                        <option value="question">Question</option>
-                        <option value="answer">Answer</option>
-                        <option value="other">Other</option>
+                        <option value="O">O</option>
+                        <option value="B_HEADER">B_HEADER</option>
+                        <option value="">I_HEADER</option>
+                        <option value="B_QUESTION">B_QUESTION</option>
+                        <option value="I_QUESTION">I_QUESTION</option>
+                        <option value="B_ANSWER">B_ANSWER</option>
+                        <option value="I_ANSWER">I_ANSWER</option>
                         </select>
                     </div>
                     <div>
