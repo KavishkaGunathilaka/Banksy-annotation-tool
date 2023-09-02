@@ -3,6 +3,7 @@ from google.oauth2 import service_account
 from google.protobuf.json_format import MessageToJson
 import os, pathlib
 import argparse
+import sys
 
 image_ext = ("*.jpg", "*.jpeg", "*.png")
 
@@ -10,19 +11,20 @@ image_ext = ("*.jpg", "*.jpeg", "*.png")
 class VisionClient:
     def __init__(self):
         credentials = service_account.Credentials.from_service_account_file(
-            os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
+            # os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
+            os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), '../auth/maximal-zoo-397804-048e53027245.json')
         )
         self.client = vision.ImageAnnotatorClient(credentials=credentials)
 
     def send_request(self, image):
         try:
-            image = vision.types.Image(content=image)
+            image = vision.Image(content=image)
         except ValueError as e:
             print("Image could not be read")
             return
         response = self.client.document_text_detection(image, timeout=10)
         serialized = MessageToJson(
-            response
+            response._pb
         )  # https://github.com/googleapis/google-cloud-python/issues/3485#issuecomment-307797562
         return serialized
 

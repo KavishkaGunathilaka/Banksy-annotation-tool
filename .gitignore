@@ -398,3 +398,6 @@ dmypy.json
 cython_debug/
 
 # End of https://github.com/github/gitignore/blob/master/Python.gitignore
+
+auth/
+gcv-env/
