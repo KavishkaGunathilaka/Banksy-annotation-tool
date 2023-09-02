@@ -173,7 +173,7 @@ export default class BoxService {
                         <option value=""></option>
                         <option value="O">O</option>
                         <option value="B_HEADER">B_HEADER</option>
-                        <option value="">I_HEADER</option>
+                        <option value="I_HEADER">I_HEADER</option>
                         <option value="B_QUESTION">B_QUESTION</option>
                         <option value="I_QUESTION">I_QUESTION</option>
                         <option value="B_ANSWER">B_ANSWER</option>
