@@ -84,11 +84,12 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("keydown", e => {
         if  (State.selectedBoxId !== null) {
             switch (e.code.toLowerCase()) {
-                case "delete":
-                case "backspace":
-                    BoxService.deleteBox(State.selectedBoxId)
-                    State.canvas.historySaveAction()
-                    break
+                // This deletes entire box. So it was removed
+                // case "delete":
+                // case "backspace":
+                //     BoxService.deleteBox(State.selectedBoxId)
+                //     State.canvas.historySaveAction()
+                //     break
                 case "digit1":
                     BoxService.changeLabel(State.selectedBoxId, "question")
                     break
@@ -106,15 +107,15 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         switch (e.key.toLowerCase()) {
-            case "z":
-                if ((e.ctrlKey || e.metaKey)) {
-                    if (e.shiftKey) {
-                        State.canvas.redo()
-                        break
-                    }
-                    State.canvas.undo()
-                }
-                break
+            // case "z":
+            //     if ((e.ctrlKey || e.metaKey)) {
+            //         if (e.shiftKey) {
+            //             State.canvas.redo()
+            //             break
+            //         }
+            //         State.canvas.undo()
+            //     }
+            //     break
             case "arrowup":
             case "arrowdown":
             case "arrowleft":
@@ -239,7 +240,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         //We do this only if the mouse is pressed
         if (State.isMouseDown) {
-            BoxService.handleMouseMove(event)
+            if (State.isCreatingBox) {
+                BoxService.handleMouseMove(event)
+            }
             LinkingService.handleMouseMove(event)
             State.canvas.renderAll();
         }

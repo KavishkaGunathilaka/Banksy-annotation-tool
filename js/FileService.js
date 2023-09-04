@@ -19,7 +19,7 @@ export default class FileService {
         let output = []
         let words = parentBox.words
         let parentBoxObj = parentBox.box
-        if (words === null){
+        if (words === null || words === undefined){
             output.push({
                 box:[
                     //Don't forget to scale the boxes coordinates to the image true size

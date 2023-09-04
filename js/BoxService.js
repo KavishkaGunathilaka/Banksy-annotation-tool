@@ -330,6 +330,25 @@ export default class BoxService {
         })
     }
 
+    // Create boxes from words in a json
+    static createBoxesFromWords(words) {
+        if (words === undefined) {
+            return null
+        } else {
+            let output = []
+            words.forEach(element => {
+                output.push(BoxService.createBox({
+                    left: element.box[0] * State.image.scaleX,
+                    top: element.box[1] * State.image.scaleY,
+                    width: element.box[2] * State.image.scaleX - element.box[0] * State.image.scaleX,
+                    height: element.box[3] * State.image.scaleY - element.box[1] * State.image.scaleY,
+                    content: element.text
+                }))
+            });
+            return output
+        }
+    }
+
     static createBoxesFromArray(boxes) {
         for (let box of boxes) {
             BoxService.createBox({
@@ -339,7 +358,8 @@ export default class BoxService {
                 width: box.box[2] * State.image.scaleX - box.box[0] * State.image.scaleX,
                 height: box.box[3] * State.image.scaleY - box.box[1] * State.image.scaleY,
                 text: box.text,
-                label: box.label
+                label: box.label,
+                // words: BoxService.createBoxesFromWords(box.words)
             })
         }
     }
