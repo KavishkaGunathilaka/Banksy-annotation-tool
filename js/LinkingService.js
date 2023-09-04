@@ -374,7 +374,7 @@ export default class LinkingService {
                 link.link.setCoords()
 
                 State.canvas.renderAll()
-                State.canvas.historySaveAction()
+                // State.canvas.historySaveAction()
             })
 
             linkTo.addEventListener("change", (e) => {
@@ -399,7 +399,7 @@ export default class LinkingService {
                 link.link.setCoords()
 
                 State.canvas.renderAll()
-                State.canvas.historySaveAction()
+                // State.canvas.historySaveAction()
             })
 
             let removeButton = document.getElementById("link-remove-button-" + link.link.id)
@@ -407,7 +407,7 @@ export default class LinkingService {
                 LinkingService.deleteLink(link.link.id)
                 document.getElementById("link-" + link.link.id).remove()
                 LinkingService.showModal(State.currentLinksModalBoxId)
-                State.canvas.historySaveAction()
+                // State.canvas.historySaveAction()
             })
         }
     }

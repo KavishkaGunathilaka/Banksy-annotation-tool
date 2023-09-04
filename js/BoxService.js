@@ -227,7 +227,7 @@ export default class BoxService {
         let removeButton = document.getElementById(`box-remove-button-${box.box.id}`)
         removeButton.addEventListener("click", () => {
             BoxService.deleteBox(box.box.id)
-            State.canvas.historySaveAction()
+            // State.canvas.historySaveAction()
         });
 
         let nelButton = document.getElementById(`box-nel-button-${box.box.id}`)
@@ -284,11 +284,15 @@ export default class BoxService {
     }
 
     static changeDrawLinkButtonVisibility(idBox, show) {
-        if (show) {
-            State.canvas.add(State.boxArray[idBox].linkButton)
+        try {
+            if (show) {
+                State.canvas.add(State.boxArray[idBox].linkButton)
+                return
+            }
+            State.canvas.remove(State.boxArray[idBox].linkButton)
+        } catch (error) {
             return
         }
-        State.canvas.remove(State.boxArray[idBox].linkButton)
     }
 
     static updateLinkPositions(event) {
@@ -452,7 +456,7 @@ export default class BoxService {
         State.boxArray[idBox].box.set({fill: boxColors[label]})
         State.boxArray[idBox].label = label
         State.canvas.renderAll()
-        State.canvas.historySaveAction()
+        // State.canvas.historySaveAction()
     }
 
     static selectBox(box) {

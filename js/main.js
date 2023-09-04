@@ -240,9 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         //We do this only if the mouse is pressed
         if (State.isMouseDown) {
-            if (State.isCreatingBox) {
-                BoxService.handleMouseMove(event)
-            }
+            BoxService.handleMouseMove(event)
             LinkingService.handleMouseMove(event)
             State.canvas.renderAll();
         }
@@ -263,7 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
             LinkingService.handleMouseUp(event)
         }
         State.isMouseDown = false;
-        State.canvas.historySaveAction()
+        // State.canvas.historySaveAction()
     });
 
     //When scrolling on the canvas
@@ -457,7 +455,7 @@ function mergeBoxes() {
                 State.canvas.discardActiveObject()
                 State.canvas.setActiveObject(State.boxArray[createdId].box)
                 BoxService.selectBox(State.boxArray[createdId].box)
-                State.canvas.historySaveAction()
+                // State.canvas.historySaveAction()
             })
         }
     }
