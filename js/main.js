@@ -90,25 +90,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     State.canvas.historySaveAction()
                     break
                 case "digit1":
-                    BoxService.changeLabel(State.selectedBoxId, "O")
+                    BoxService.changeLabel(State.selectedBoxId, "question")
                     break
                 case "digit2":
-                    BoxService.changeLabel(State.selectedBoxId, "B_HEADER")
+                    BoxService.changeLabel(State.selectedBoxId, "answer")
                     break
                 case "digit3":
-                    BoxService.changeLabel(State.selectedBoxId, "I_HEADER")
+                    BoxService.changeLabel(State.selectedBoxId, "header")
                     break
                 case "digit4":
-                    BoxService.changeLabel(State.selectedBoxId, "B_QUESTION")
-                    break
-                case "digit5":
-                    BoxService.changeLabel(State.selectedBoxId, "I_QUESTION")
-                    break
-                case "digit6":
-                    BoxService.changeLabel(State.selectedBoxId, "B_ANSWER")
-                    break
-                case "digit7":
-                    BoxService.changeLabel(State.selectedBoxId, "I_ANSWER")
+                    BoxService.changeLabel(State.selectedBoxId, "other")
                     break
                 default:
                     break
@@ -457,7 +448,8 @@ function mergeBoxes() {
                 top: selection.top,
                 width: selection.aCoords.br.x - selection.left - 1,
                 height: selection.aCoords.br.y - selection.top - 1, //Fabric adds 1 pixel for whatever reason so ¯\_(ツ)_/¯
-                text: text
+                text: text,
+                words: boxes
             }, () => {
                 State.canvas.discardActiveObject()
                 State.canvas.setActiveObject(State.boxArray[createdId].box)

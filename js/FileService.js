@@ -15,6 +15,39 @@ export default class FileService {
         return "image_" + ('00' + State.currentFileNumber).slice(-3)
     }
 
+    static extractWords(parentBox) {
+        let output = []
+        let words = parentBox.words
+        let parentBoxObj = parentBox.box
+        if (words === null){
+            output.push({
+                box:[
+                    //Don't forget to scale the boxes coordinates to the image true size
+                    parseFloat(Number(((parentBoxObj.aCoords.tl.x * 1000) / (State.image.scaleX * 1000))).toFixed(2)),
+                    parseFloat(Number(((parentBoxObj.aCoords.tl.y * 1000) / (State.image.scaleY * 1000))).toFixed(2)),
+                    parseFloat(Number((((parentBoxObj.aCoords.tl.x + parentBoxObj.width) * 1000) / (State.image.scaleX * 1000))).toFixed(2)),
+                    parseFloat(Number((((parentBoxObj.aCoords.tl.y + parentBoxObj.height) * 1000) / (State.image.scaleY * 1000))).toFixed(2))
+                ],
+                text:parentBox.content
+            })
+        } else {
+            words.forEach(element => {
+                let boxObj = element.box
+                output.push({
+                    box:[
+                        //Don't forget to scale the boxes coordinates to the image true size
+                        parseFloat(Number(((boxObj.aCoords.tl.x * 1000) / (State.image.scaleX * 1000))).toFixed(2)),
+                        parseFloat(Number(((boxObj.aCoords.tl.y * 1000) / (State.image.scaleY * 1000))).toFixed(2)),
+                        parseFloat(Number((((boxObj.aCoords.tl.x + boxObj.width) * 1000) / (State.image.scaleX * 1000))).toFixed(2)),
+                        parseFloat(Number((((boxObj.aCoords.tl.y + boxObj.height) * 1000) / (State.image.scaleY * 1000))).toFixed(2))
+                    ],
+                    text:element.content
+                })
+            });
+        }
+        return output
+    }
+
     static generateJsonString() {
         let entities = []
         for (let box of State.boxArray) {
@@ -36,6 +69,7 @@ export default class FileService {
                     parseFloat(Number((((boxObj.aCoords.tl.x + boxObj.width) * 1000) / (State.image.scaleX * 1000))).toFixed(2)),
                     parseFloat(Number((((boxObj.aCoords.tl.y + boxObj.height) * 1000) / (State.image.scaleY * 1000))).toFixed(2))
                 ],
+                words:FileService.extractWords(box),
                 linking: [...fromLinks, ...toLinks]
             })
         }

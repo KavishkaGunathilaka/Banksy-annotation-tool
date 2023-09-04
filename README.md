@@ -84,13 +84,10 @@ You can zoom in and out with the mouse wheel, and move in the receipt by maintai
 
 When selecting a box, you can change its label with the numeric keys on top of you keyboard:
 
-- `1` : O
-- `3` : I_HEADER
-- `2` : B_HEADER
-- `4` : B_QUESTION
-- `5` : I_QUESTION
-- `6` : B_ANSWER
-- `7` : I_ANSWER
+- `1` : question
+- `3` : answer
+- `2` : header
+- `4` : other
 
 When you finish the annotation of an image, simply hit "Save output" on the top of the screen. A JSON file with all the data will be downloaded.
 

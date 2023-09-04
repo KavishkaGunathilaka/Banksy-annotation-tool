@@ -6,13 +6,10 @@ const LINK_BUTTON_OFFSET = 10;
 
 //This is a combination of label/color used for coloring the boxes. Feel free to change this, it will modify the colors everywhere.
 const boxColors = {
-    O: "rgb(170,0,0)",
-    B_HEADER: "rgb(170,153,21)",
-    I_HEADER: "rgb(170,80,13)",
-    B_QUESTION: "rgb(103,170,0)",
-    I_QUESTION: "rgb(0,0,170)",
-    B_ANSWER: "rgb(21,153,170)",
-    I_ANSWER: "rgb(0,170,0)"
+    question: "rgb(255,0,0)",
+    answer: "rgb(0,255,0)",
+    header: "rgb(0,0,255)",
+    other: "rgb(219,3,252)"
 }
 
 fabric.Object.prototype.borderScaleFactor = 2
@@ -171,13 +168,10 @@ export default class BoxService {
                         <label for="label">Type</label>
                         <select class="uk-select uk-form-small" id='label-${box.box.id}' name="label">
                         <option value=""></option>
-                        <option value="O">O</option>
-                        <option value="B_HEADER">B_HEADER</option>
-                        <option value="I_HEADER">I_HEADER</option>
-                        <option value="B_QUESTION">B_QUESTION</option>
-                        <option value="I_QUESTION">I_QUESTION</option>
-                        <option value="B_ANSWER">B_ANSWER</option>
-                        <option value="I_ANSWER">I_ANSWER</option>
+                        <option value="question">question</option>
+                        <option value="answer">answer</option>
+                        <option value="header">header</option>
+                        <option value="other">other</option>
                         </select>
                     </div>
                     <div>
@@ -372,6 +366,7 @@ export default class BoxService {
                 }),
                 content: args.text !== undefined ? args.text : "",
                 label: args.label !== undefined ? args.label : "",
+                words:args.words !== undefined ? args.words : null,
                 originLinks: [],
                 destinationLinks: []
             }
