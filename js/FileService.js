@@ -58,10 +58,16 @@ export default class FileService {
             let fromLinks = box.originLinks.map(link => [State.linkArray[link].from, State.linkArray[link].to]).filter(link => link !== null)
             let toLinks = box.destinationLinks.map(link => [State.linkArray[link].from, State.linkArray[link].to]).filter(link => link !== null)
             let boxObj = box.box
+            let boxLabel = box.label
+
+            if(box.label===""){
+                boxLabel = "other"
+            }
+
             entities.push({
                 id: boxObj.id,
                 text: box.content,
-                label: box.label,
+                label: boxLabel,
                 box: [
                     //Don't forget to scale the boxes coordinates to the image true size
                     parseFloat(Number(((boxObj.aCoords.tl.x * 1000) / (State.image.scaleX * 1000))).toFixed(2)),
