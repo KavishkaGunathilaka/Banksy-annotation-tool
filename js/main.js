@@ -107,15 +107,15 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         switch (e.key.toLowerCase()) {
-            // case "z":
-            //     if ((e.ctrlKey || e.metaKey)) {
-            //         if (e.shiftKey) {
-            //             State.canvas.redo()
-            //             break
-            //         }
-            //         State.canvas.undo()
-            //     }
-            //     break
+            case "z":
+                if ((e.ctrlKey || e.metaKey)) {
+                    if (e.shiftKey) {
+                        State.canvas.redo()
+                        break
+                    }
+                    State.canvas.undo()
+                }
+                break
             case "arrowup":
             case "arrowdown":
             case "arrowleft":
@@ -139,6 +139,11 @@ document.addEventListener("DOMContentLoaded", () => {
     //Exporting the result
     document.getElementById("export-button").addEventListener("click", e => {
         exportResult()
+    })
+
+    //Exporting the result
+    document.getElementById("import-button").addEventListener("click", e => {
+        importFromFile()
     })
 
     //Showing the current image name on top
@@ -261,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
             LinkingService.handleMouseUp(event)
         }
         State.isMouseDown = false;
-        // State.canvas.historySaveAction()
+        State.canvas.historySaveAction()
     });
 
     //When scrolling on the canvas
@@ -286,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-function setImage(path) {
+function setImage(path, loadFromOuput=false) {
     return new Promise((resolve, reject) => {
         //Warning, the image can be loaded a little after, so if there is already things on the canvas,
         // the image can be placed on top of it
@@ -312,28 +317,30 @@ function setImage(path) {
             //So we send the image to the background
             State.image.sendToBack();
 
-            //Loading data in local storage if exists
-            if (window.localStorage.getItem(FileService.getImageName()) !== null) {
-                UIkit.modal.confirm("Data has been found in local storage. Do you want to import it ?")
-                    .then(() => {
-                        //Getting the stored data in the localstorage
-                        let objects = JSON.parse(window.localStorage.getItem(FileService.getImageName()))
-                        //And creating the boxes and links
-                        BoxService.createBoxesFromArray(objects)
-                        LinkingService.createLinksFromArray(objects)
-                        resolve()
-                    },
-                        //Otherwise getting data from file
-                        () => {
-                            FileService.loadJson()
+            if (loadFromOuput === false){
+                //Loading data in local storage if exists
+                if (window.localStorage.getItem(FileService.getImageName()) !== null) {
+                    UIkit.modal.confirm("Data has been found in local storage. Do you want to import it ?")
+                        .then(() => {
+                            //Getting the stored data in the localstorage
+                            let objects = JSON.parse(window.localStorage.getItem(FileService.getImageName()))
+                            //And creating the boxes and links
+                            BoxService.createBoxesFromArray(objects, 'string')
+                            LinkingService.createLinksFromArray(objects)
                             resolve()
-                        })
+                        },
+                            //Otherwise getting data from file
+                            () => {
+                                FileService.loadJson()
+                                resolve()
+                            })
 
-                return
+                    return
+                }
+                //Loading from json file otherwise
+                FileService.loadJson()
+                resolve()
             }
-            //Loading from json file otherwise
-            FileService.loadJson()
-            resolve()
     })
     });
 }
@@ -432,6 +439,37 @@ function exportResult() {
     State.saveAlert = true
 }
 
+function importFromFile() {
+    //Removing all the objects from the canvas
+    State.canvas.remove(...State.canvas.getObjects())
+    //Reseting all the state variables
+    State.resetState()
+    //And clearing the box list
+    document.getElementById("box-list").innerHTML = ""
+    //Changing the displayed image name
+    document.getElementById("current-image").innerText = FileService.getImageName()
+    //And loading the new image
+    try {
+        setImage(FileService.getImageFilePath(), true)
+    } catch (e) {
+        UIkit.notification("There is no " + FileService.getImageName(), {status: 'danger', pos: "bottom-center"})
+    }
+    readSavedFile().then(() =>  State.canvas.historyInit())
+}
+
+function readSavedFile() {
+    return new Promise((resolve, reject) => {
+        let req = new XMLHttpRequest()
+            req.open("GET", FileService.getOutputJsonFilePath() ,false)
+            req.send()
+            if (req.status === 404) {
+                return
+            }
+            FileService.loadFromJsonString(req.responseText)
+            resolve()
+        })
+}
+
 function mergeBoxes() {
     if (State.mergingMode) {
         let selection = State.canvas.getActiveObject()
@@ -450,12 +488,12 @@ function mergeBoxes() {
                 width: selection.aCoords.br.x - selection.left - 1,
                 height: selection.aCoords.br.y - selection.top - 1, //Fabric adds 1 pixel for whatever reason so ¯\_(ツ)_/¯
                 text: text,
-                words: boxes
+                words: BoxService.createSubBoxes(boxes, 'merge')
             }, () => {
                 State.canvas.discardActiveObject()
                 State.canvas.setActiveObject(State.boxArray[createdId].box)
                 BoxService.selectBox(State.boxArray[createdId].box)
-                // State.canvas.historySaveAction()
+                State.canvas.historySaveAction()
             })
         }
     }
