@@ -238,7 +238,14 @@ export default class BoxService {
         let textInput = document.getElementById("content-" + box.box.id)
         textInput.value = box.content
         textInput.addEventListener("input", e => {
-            State.boxArray[box.box.id].content = e.target.value
+            if ( State.boxArray[box.box.id].words.length > 1){
+                e.preventDefault();
+                alert("You cannot edit the content of a box after merging");
+                textInput.value = box.content
+            } else {
+                State.boxArray[box.box.id].content = e.target.value;
+                State.boxArray[box.box.id].words[0].word = e.target.value;
+            }
         })
 
         let labelSelect = document.getElementById("label-" + box.box.id)
