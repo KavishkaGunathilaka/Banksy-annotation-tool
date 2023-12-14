@@ -319,11 +319,11 @@ function setImage(path, loadFromOuput=false) {
 
             if (loadFromOuput === false){
                 //Loading data in local storage if exists
-                if (window.localStorage.getItem(FileService.getImageName()) !== null) {
+                if (window.localStorage.getItem(FileService.getOutputJsonFilePath()) !== null) {
                     UIkit.modal.confirm("Data has been found in local storage. Do you want to import it ?")
                         .then(() => {
                             //Getting the stored data in the localstorage
-                            let objects = JSON.parse(window.localStorage.getItem(FileService.getImageName()))
+                            let objects = JSON.parse(window.localStorage.getItem(FileService.getOutputJsonFilePath()))
                             //And creating the boxes and links
                             BoxService.createBoxesFromArray(objects, 'string')
                             LinkingService.createLinksFromArray(objects)

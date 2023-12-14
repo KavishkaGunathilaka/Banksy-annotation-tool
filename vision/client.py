@@ -12,7 +12,7 @@ class VisionClient:
     def __init__(self):
         credentials = service_account.Credentials.from_service_account_file(
             # os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
-            os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), '../auth/maximal-zoo-397804-048e53027245.json')
+            os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), '../auth/sri-doc-407209-8ee7018e745d.json')
         )
         self.client = vision.ImageAnnotatorClient(credentials=credentials)
 
