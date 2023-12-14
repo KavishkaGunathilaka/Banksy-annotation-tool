@@ -68,12 +68,20 @@ export default class BoxService {
 
                 content: "",
                 label: "",
+                words:[],
                 //OriginLinks are the IDs of the links that goes from this box
                 originLinks: [],
                 //And this is the IDs of the links that goes to this box
                 destinationLinks: []
             }
         //And we add the box to the canvas
+        let box = State.boxArray[State.currentBoxId].box
+        State.boxArray[State.currentBoxId].words.push(BoxService.createSubBox({
+            left: box.left,
+            top: box.top,
+            width: box.width,
+            height: box.height
+        }))
         State.canvas.add(State.boxArray[State.currentBoxId].box);
     }
 
@@ -440,6 +448,7 @@ export default class BoxService {
                         left: args.left,
                         top: args.top,
                         width: args.width,
+                        height: args.height,
                         type: "subbox",
                         lockRotation: true,
                         visible: false

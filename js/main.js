@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("merge-button").addEventListener("click", mergeBoxes)
 
-    // document.getElementById("split-button").addEventListener("click", splitBox)
+    document.getElementById("split-button").addEventListener("click", splitBox)
 
 
 
@@ -505,32 +505,31 @@ function mergeBoxes() {
     }
 }
 
-// function splitBox() {
-//     let selection = State.canvas.getActiveObject()
-//     if (selection !== null && selection._objects !== undefined && selection.length == 1) {
-//         let boxes = selection._objects.map(obj => State.boxArray[obj.id])
-//         boxes.forEach(box => {
-//             BoxService.deleteBox(box.box.id)
-//         })
-//         //We sort from the left to the right
-//         boxes.sort((a, b) => a.box.left >= b.box.left ? 1 : -1)
-//         //in order to concat the text
-//         let text = boxes.reduce((str, box) => str + " " + box.content, "").trim()
-//         let createdId = BoxService.createBox({
-//             left: selection.left,
-//             top: selection.top,
-//             width: selection.aCoords.br.x - selection.left - 1,
-//             height: selection.aCoords.br.y - selection.top - 1, //Fabric adds 1 pixel for whatever reason so ¯\_(ツ)_/¯
-//             text: text,
-//             words: BoxService.createSubBoxes(boxes, 'merge')
-//         }, () => {
-//             State.canvas.discardActiveObject()
-//             State.canvas.setActiveObject(State.boxArray[createdId].box)
-//             BoxService.selectBox(State.boxArray[createdId].box)
-//             State.canvas.historySaveAction()
-//         })
-//     }
-// }
+function splitBox() {
+    let selection = State.canvas.getActiveObject()
+    
+    if (selection !== null){
+        let box = State.boxArray[selection.id]
+
+        if (box.words.length < 2){
+            alert("Please select a merged box")
+            return
+        }
+        BoxService.deleteBox(box.box.id)
+
+        box.words.forEach(word => {
+            BoxService.createBox({
+                left:word.box.left,
+                top:word.box.top,
+                width:word.box.width,
+                height:word.box.height,
+                text:word.word
+            })
+        })
+        State.canvas.discardActiveObject()
+        State.canvas.historySaveAction()
+    }
+}
 
 
 
