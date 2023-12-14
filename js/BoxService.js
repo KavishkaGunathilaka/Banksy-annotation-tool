@@ -257,7 +257,6 @@ export default class BoxService {
 
     static createLinkButton(idBox, callback) {
         let box = State.boxArray[idBox].box
-
         new fabric.Image.fromURL("/images/link.svg", function(oImage){
             State.boxArray[idBox].linkButton = oImage
             State.boxArray[idBox].linkButton.set({
@@ -376,7 +375,7 @@ export default class BoxService {
                     height: args.height,
                     fill: boxColors[label.toLowerCase()] !== undefined ?
                             boxColors[label.toLowerCase()] :
-                            'rgb(220, 0, 0)',
+                            'rgb(0, 220, 220)',
                     opacity: 0.2,
                     id: id,
                     type: "box",

@@ -188,6 +188,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("merge-button").addEventListener("click", mergeBoxes)
 
+    // document.getElementById("split-button").addEventListener("click", splitBox)
+
 
 
     //Handling mouse down event on the canvas
@@ -440,33 +442,37 @@ function exportResult() {
 }
 
 function importFromFile() {
-    //Removing all the objects from the canvas
-    State.canvas.remove(...State.canvas.getObjects())
-    //Reseting all the state variables
-    State.resetState()
-    //And clearing the box list
-    document.getElementById("box-list").innerHTML = ""
-    //Changing the displayed image name
-    document.getElementById("current-image").innerText = FileService.getImageName()
-    //And loading the new image
-    try {
-        setImage(FileService.getImageFilePath(), true)
-    } catch (e) {
-        UIkit.notification("There is no " + FileService.getImageName(), {status: 'danger', pos: "bottom-center"})
-    }
-    readSavedFile().then(() =>  State.canvas.historyInit())
+    readSavedFile().then(() =>  {
+        try {
+            setImage(FileService.getImageFilePath(), true)
+        } catch (e) {
+            UIkit.notification("There is no " + FileService.getImageName(), {status: 'danger', pos: "bottom-center"})
+        }
+    }).catch((e)=> {
+        UIkit.notification("There is no " + FileService.getImageName() + "_output.json", {status: 'danger', pos: "bottom-center"})
+    })
 }
 
 function readSavedFile() {
     return new Promise((resolve, reject) => {
         let req = new XMLHttpRequest()
-            req.open("GET", FileService.getOutputJsonFilePath() ,false)
-            req.send()
-            if (req.status === 404) {
-                return
-            }
-            FileService.loadFromJsonString(req.responseText)
-            resolve()
+        req.open("GET", FileService.getOutputJsonFilePath() ,false)
+        req.send()
+        if (req.status === 404) {
+            reject();
+        }
+        State.canvas.historyInit()
+        //Removing all the objects from the canvas
+        State.canvas.remove(...State.canvas.getObjects())
+        //Reseting all the state variables
+        State.resetState()
+        //And clearing the box list
+        document.getElementById("box-list").innerHTML = ""
+        //Changing the displayed image name
+        document.getElementById("current-image").innerText = FileService.getImageName()
+        //And loading the new image
+        FileService.loadFromJsonString(req.responseText)
+        resolve()
         })
 }
 
@@ -499,7 +505,32 @@ function mergeBoxes() {
     }
 }
 
-
+// function splitBox() {
+//     let selection = State.canvas.getActiveObject()
+//     if (selection !== null && selection._objects !== undefined && selection.length == 1) {
+//         let boxes = selection._objects.map(obj => State.boxArray[obj.id])
+//         boxes.forEach(box => {
+//             BoxService.deleteBox(box.box.id)
+//         })
+//         //We sort from the left to the right
+//         boxes.sort((a, b) => a.box.left >= b.box.left ? 1 : -1)
+//         //in order to concat the text
+//         let text = boxes.reduce((str, box) => str + " " + box.content, "").trim()
+//         let createdId = BoxService.createBox({
+//             left: selection.left,
+//             top: selection.top,
+//             width: selection.aCoords.br.x - selection.left - 1,
+//             height: selection.aCoords.br.y - selection.top - 1, //Fabric adds 1 pixel for whatever reason so ¯\_(ツ)_/¯
+//             text: text,
+//             words: BoxService.createSubBoxes(boxes, 'merge')
+//         }, () => {
+//             State.canvas.discardActiveObject()
+//             State.canvas.setActiveObject(State.boxArray[createdId].box)
+//             BoxService.selectBox(State.boxArray[createdId].box)
+//             State.canvas.historySaveAction()
+//         })
+//     }
+// }
 
 
 
