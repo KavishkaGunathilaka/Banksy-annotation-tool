@@ -286,6 +286,29 @@ document.addEventListener("DOMContentLoaded", () => {
         event.e.stopPropagation();
     });
 
+    State.canvas.on('object:scaling', function (options) {
+        let box = State.boxArray[options.target.id]
+        var target = options.target;
+        var scaleX = target.scaleX;
+        var scaleY = target.scaleY;
+
+        target.set({
+            width: target.width * scaleX,
+            height: target.height * scaleY,
+            scaleX: 1,
+            scaleY: 1
+        });
+        
+        box.words[0].box.set({
+            top:box.box.top,
+            left:box.box.left,
+            width: box.box.width,
+            height: box.box.height,
+        })
+        
+        State.canvas.renderAll();
+    });
+
     setImage(FileService.getImageFilePath())
         .then(() => {
             State.canvas.historyInit()

@@ -215,6 +215,7 @@ export default class BoxService {
             }
 
             State.selectedBoxId = box.box.id
+            console.log(box.box)
             BoxService.changeDrawLinkButtonVisibility(State.selectedBoxId, true)
             if (!State.showAllLinks) {
                 LinkingService.changeLinksVisibility(State.selectedBoxId, true)
