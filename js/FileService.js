@@ -10,6 +10,9 @@ export default class FileService {
     static getJsonFilePath() {
         return "/source/" + FileService.getImageName() + ".json"
     }
+    static getOutputJsonFilePath() {
+        return "/source/" + FileService.getImageName() + "_output.json"
+    }
 
     static getImageName() {
         return "image_" + ('00' + State.currentFileNumber).slice(-3)
@@ -18,19 +21,7 @@ export default class FileService {
     static extractWords(parentBox) {
         let output = []
         let words = parentBox.words
-        let parentBoxObj = parentBox.box
-        if (words === null || words === undefined){
-            output.push({
-                box:[
-                    //Don't forget to scale the boxes coordinates to the image true size
-                    parseFloat(Number(((parentBoxObj.aCoords.tl.x * 1000) / (State.image.scaleX * 1000))).toFixed(2)),
-                    parseFloat(Number(((parentBoxObj.aCoords.tl.y * 1000) / (State.image.scaleY * 1000))).toFixed(2)),
-                    parseFloat(Number((((parentBoxObj.aCoords.tl.x + parentBoxObj.width) * 1000) / (State.image.scaleX * 1000))).toFixed(2)),
-                    parseFloat(Number((((parentBoxObj.aCoords.tl.y + parentBoxObj.height) * 1000) / (State.image.scaleY * 1000))).toFixed(2))
-                ],
-                text:parentBox.content
-            })
-        } else {
+        if (words !== undefined){
             words.forEach(element => {
                 let boxObj = element.box
                 output.push({
@@ -41,10 +32,10 @@ export default class FileService {
                         parseFloat(Number((((boxObj.aCoords.tl.x + boxObj.width) * 1000) / (State.image.scaleX * 1000))).toFixed(2)),
                         parseFloat(Number((((boxObj.aCoords.tl.y + boxObj.height) * 1000) / (State.image.scaleY * 1000))).toFixed(2))
                     ],
-                    text:element.content
+                    text:element.word
                 })
-            });
-        }
+                });
+            }
         return output
     }
 
@@ -59,10 +50,6 @@ export default class FileService {
             let toLinks = box.destinationLinks.map(link => [State.linkArray[link].from, State.linkArray[link].to]).filter(link => link !== null)
             let boxObj = box.box
             let boxLabel = box.label
-
-            if(box.label===""){
-                boxLabel = "other"
-            }
 
             entities.push({
                 id: boxObj.id,
@@ -95,13 +82,13 @@ export default class FileService {
         let objects = JSON.parse(req.responseText);
         let boxObjects = FileService.parseVisionResponse(objects)
 
-        BoxService.createBoxesFromArray(boxObjects)
+        BoxService.createBoxesFromArray(boxObjects, 'vision')
     }
 
     static loadFromJsonString(str) {
         let objects = JSON.parse(str)
         //Creating the boxes and links
-        BoxService.createBoxesFromArray(objects)
+        BoxService.createBoxesFromArray(objects, 'string')
         LinkingService.createLinksFromArray(objects)
     }
 

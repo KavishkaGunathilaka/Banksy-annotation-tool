@@ -68,12 +68,20 @@ export default class BoxService {
 
                 content: "",
                 label: "",
+                words:[],
                 //OriginLinks are the IDs of the links that goes from this box
                 originLinks: [],
                 //And this is the IDs of the links that goes to this box
                 destinationLinks: []
             }
         //And we add the box to the canvas
+        let box = State.boxArray[State.currentBoxId].box
+        State.boxArray[State.currentBoxId].words.push(BoxService.createSubBox({
+            left: box.left,
+            top: box.top,
+            width: box.width,
+            height: box.height
+        }))
         State.canvas.add(State.boxArray[State.currentBoxId].box);
     }
 
@@ -207,6 +215,7 @@ export default class BoxService {
             }
 
             State.selectedBoxId = box.box.id
+            console.log(box.box)
             BoxService.changeDrawLinkButtonVisibility(State.selectedBoxId, true)
             if (!State.showAllLinks) {
                 LinkingService.changeLinksVisibility(State.selectedBoxId, true)
@@ -227,7 +236,7 @@ export default class BoxService {
         let removeButton = document.getElementById(`box-remove-button-${box.box.id}`)
         removeButton.addEventListener("click", () => {
             BoxService.deleteBox(box.box.id)
-            // State.canvas.historySaveAction()
+            State.canvas.historySaveAction()
         });
 
         let nelButton = document.getElementById(`box-nel-button-${box.box.id}`)
@@ -238,7 +247,14 @@ export default class BoxService {
         let textInput = document.getElementById("content-" + box.box.id)
         textInput.value = box.content
         textInput.addEventListener("input", e => {
-            State.boxArray[box.box.id].content = e.target.value
+            if ( State.boxArray[box.box.id].words.length > 1){
+                e.preventDefault();
+                alert("You cannot edit the content of a box after merging");
+                textInput.value = box.content
+            } else {
+                State.boxArray[box.box.id].content = e.target.value;
+                State.boxArray[box.box.id].words[0].word = e.target.value;
+            }
         })
 
         let labelSelect = document.getElementById("label-" + box.box.id)
@@ -250,7 +266,6 @@ export default class BoxService {
 
     static createLinkButton(idBox, callback) {
         let box = State.boxArray[idBox].box
-
         new fabric.Image.fromURL("/images/link.svg", function(oImage){
             State.boxArray[idBox].linkButton = oImage
             State.boxArray[idBox].linkButton.set({
@@ -334,26 +349,8 @@ export default class BoxService {
         })
     }
 
-    // Create boxes from words in a json
-    static createBoxesFromWords(words) {
-        if (words === undefined) {
-            return null
-        } else {
-            let output = []
-            words.forEach(element => {
-                output.push(BoxService.createBox({
-                    left: element.box[0] * State.image.scaleX,
-                    top: element.box[1] * State.image.scaleY,
-                    width: element.box[2] * State.image.scaleX - element.box[0] * State.image.scaleX,
-                    height: element.box[3] * State.image.scaleY - element.box[1] * State.image.scaleY,
-                    content: element.text
-                }))
-            });
-            return output
-        }
-    }
-
-    static createBoxesFromArray(boxes) {
+    
+    static createBoxesFromArray(boxes, mode) {
         for (let box of boxes) {
             BoxService.createBox({
                 id: box.id,
@@ -363,13 +360,20 @@ export default class BoxService {
                 height: box.box[3] * State.image.scaleY - box.box[1] * State.image.scaleY,
                 text: box.text,
                 label: box.label,
-                // words: BoxService.createBoxesFromWords(box.words)
+                words: BoxService.createSubBoxes(box, mode) 
             })
         }
     }
 
     static createBox(args, callback) {
         let id = args.id !== undefined ? args.id : State.currentBoxId
+        let label = ""
+        if (args.label !== undefined && args.label !== ""){
+            label = args.label 
+        } else {
+            label = "other"
+        }
+
         State.boxArray[id] =
             //Here we recreate boxes from objects
             {
@@ -378,19 +382,17 @@ export default class BoxService {
                     top: args.top,
                     width: args.width,
                     height: args.height,
-                    fill: args.label !== undefined ?
-                        boxColors[args.label.toLowerCase()] !== undefined ?
-                            boxColors[args.label.toLowerCase()] :
-                            'rgb(220, 0, 0)' :
-                        'rgb(220, 0, 0)',
+                    fill: boxColors[label.toLowerCase()] !== undefined ?
+                            boxColors[label.toLowerCase()] :
+                            'rgb(0, 220, 220)',
                     opacity: 0.2,
                     id: id,
                     type: "box",
                     lockRotation: true,
                 }),
                 content: args.text !== undefined ? args.text : "",
-                label: args.label !== undefined ? args.label : "",
-                words:args.words !== undefined ? args.words : null,
+                label: label,
+                words:args.words !== undefined ? args.words : [],
                 originLinks: [],
                 destinationLinks: []
             }
@@ -407,6 +409,55 @@ export default class BoxService {
         State.currentBoxId++
 
         return id
+    }
+
+    // Create boxes from words in a json
+    static createSubBoxes(obj, mode) {
+        if (mode === 'vision') {
+                return [BoxService.createSubBox({
+                    left: obj.box[0] * State.image.scaleX,
+                    top: obj.box[1] * State.image.scaleY,
+                    width: obj.box[2] * State.image.scaleX - obj.box[0] * State.image.scaleX,
+                    height: obj.box[3] * State.image.scaleY - obj.box[1] * State.image.scaleY,
+                    word: obj.text
+                })]
+        } else if (mode === 'merge'){
+            let output = []
+            obj.forEach(box => {
+                box.words.forEach(element => {
+                    output.push(element)
+                })
+            });
+            return output
+        } else if (mode === 'string'){
+            let output = []
+            obj.words.forEach(element => {
+                output.push(BoxService.createSubBox({
+                    left: element.box[0] * State.image.scaleX,
+                    top: element.box[1] * State.image.scaleY,
+                    width: element.box[2] * State.image.scaleX - element.box[0] * State.image.scaleX,
+                    height: element.box[3] * State.image.scaleY - element.box[1] * State.image.scaleY,
+                    word: element.text
+                }))
+            });
+            return output
+        }
+    }
+
+    static createSubBox(args) {
+       let output = { box: new fabric.Rect({
+                        left: args.left,
+                        top: args.top,
+                        width: args.width,
+                        height: args.height,
+                        type: "subbox",
+                        lockRotation: true,
+                        visible: false
+                    }),
+                    word:args.word
+                }
+        State.canvas.add(output.box)
+        return output
     }
 
     //When deleting a link, we reindex the links to avoid having a gap in the indices
@@ -456,7 +507,7 @@ export default class BoxService {
         State.boxArray[idBox].box.set({fill: boxColors[label]})
         State.boxArray[idBox].label = label
         State.canvas.renderAll()
-        // State.canvas.historySaveAction()
+        State.canvas.historySaveAction()
     }
 
     static selectBox(box) {
