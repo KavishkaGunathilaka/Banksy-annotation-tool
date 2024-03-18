@@ -1,0 +1,6 @@
+npm install -g serve      
+virtualenv gcv-env                : create virtual env
+.\gcv-env\Scripts\activate        : activate virtual env
+pip3 install google-cloud-vision  : ocr 
+python vision\client.py source    : give in put jpeg to the model
+serve                             : start the server
